@@ -1,0 +1,59 @@
+SET(SOURCES
+  lib/base64.c
+  lib/connect.c
+  lib/content_encoding.c
+  lib/cookie.c
+  lib/dict.c
+  lib/easy.c
+  lib/escape.c
+  lib/file.c
+  lib/formdata.c
+  lib/ftp.c
+  lib/getdate.c
+  lib/getenv.c
+  lib/getinfo.c
+  lib/hash.c
+  lib/hostip.c
+  lib/http.c
+  lib/http_chunks.c
+  lib/http_digest.c
+  lib/http_negotiate.c
+  lib/http_ntlm.c
+  lib/if2ip.c
+  lib/inet_pton.c
+  lib/krb4.c
+  lib/ldap.c
+  lib/llist.c
+  lib/md5.c
+  lib/memdebug.c
+  lib/mprintf.c
+  lib/multi.c
+  lib/netrc.c
+#  lib/nwlib.c
+  lib/progress.c
+  lib/security.c
+  lib/sendf.c
+  lib/share.c
+  lib/speedcheck.c
+  lib/ssluse.c
+  lib/strequal.c
+  lib/strtok.c
+  lib/strtoofft.c
+  lib/telnet.c
+  lib/timeval.c
+  lib/transfer.c
+  lib/url.c
+  lib/version.c
+)
+
+include_directories("include")
+add_library(curl ${SOURCES})
+SET_PROPERTY(TARGET curl                PROPERTY FOLDER 3rdParty)
+IF(UNIX)
+  add_definitions(-DHAVE_GETTIMEOFDAY)
+  add_definitions(-DHAVE_HAVE_NETINET_IN_H)
+
+  IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set_target_properties(curl PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
+  ENDIF()
+ENDIF()  
