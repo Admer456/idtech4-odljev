@@ -1,5 +1,7 @@
 # Odljev   
-(means "drain" in Bosnian)   
+*("drain" in Bosnian)*   
+
+Welcome to Odljev's repository!
 
 ## Table of contents
 
@@ -11,8 +13,8 @@
   
 ## About
 
-Odljev is basically a small game set in 80s Yugoslavia. This is where you can access its source code.    
-It is based on eXistence's fhDoom, which you should totally check out: [fhDoom GitHub page](https://github.com/eXistence/fhDOOM)   
+Odljev is a small techno-stealth game set in 80s Yugoslavia. This is where you can access its source code.    
+Its code is based on eXistence's fhDoom, which you should totally check out: [fhDoom](https://github.com/eXistence/fhDOOM)   
 
 ## Features
 
