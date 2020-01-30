@@ -3,7 +3,7 @@
 
 Welcome to Odljev's repository!
 
-## Table of contents
+### Table of contents
 
   * [About](#about)
   * [Features](#features)
@@ -18,17 +18,17 @@ Its code is based on eXistence's fhDoom, which you should totally check out: [fh
 
 ## Features
 
-Some of the most significant changes include:
-  * Blending of up to 3 materials per model, with a couple of new parameters for material defs
-  * One-pass PBR shader (no more 2004 Phong shading with specular maps, now you gotta use roughness (R channel), metallic (G channel), and AO (B channel))
-  * Interactive computer terminals, which you can actually type into
-  * "Use" functionality (e.g. press F to open a door in front of you)
-  * Leaning left-right
-  * Ability to pick up physical objects like boxes, ragdolls etc.
-  * Text display entity that scans in characters (think of CoD4: MW intro mission text)
-  * Sliding
-  * Cool view bobbing stuff
-  * [LibreCoop](https://github.com/Stradex/H.A.S.T.E.) integration, also present in the game [H.A.S.T.E.](https://www.indiedb.com/games/haste-a-free-to-play-fps)
+Some of the more significant changes include:
+  * Rendering: Blending of up to 3 materials per model, with a couple of new parameters for material defs
+  * Rendering: One-pass PBR shader (no more 2004 specular maps, now you got roughness + metallic + AO in RGB channels respectively)
+  * Entities: Interactive computer terminals, which you can actually type into
+  * Entities: "Use" functionality (e.g. press F to open a door in front of you)
+  * Movement: Leaning left-right
+  * Gameplay: Ability to pick up physical objects like boxes, ragdolls etc.
+  * Entities: Text display entity that scans in characters (think of CoD4: MW intro mission text)
+  * Movement: Sliding
+  * Other: Cool view bobbing stuff
+  * Networking: Stradex' [LibreCoop](https://github.com/Stradex/H.A.S.T.E.) integration, also used by [H.A.S.T.E.](https://www.indiedb.com/games/haste-a-free-to-play-fps)
 
 ## Building
 
@@ -73,7 +73,7 @@ Sorry, but this fork is meant for standalone game development, and it'd very lik
 
 I didn't test this with Linux, so I definitely don't know how it's going to work. But, I haven't done any Windows-specific stuff in there, so it should be fine.
 
-## cvars
+### cvars
 
 Odljev added a couple of CVars:
 
