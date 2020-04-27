@@ -101,7 +101,8 @@ void admElectroSocket::Think()
 
 void admElectroSocket::OnMultimeter( idWeapon *weap )
 {
-	weap->Measure( voltageCurrent );
+	weap->Measure( voltageEffective );
+	common->Printf( va( "Measured voltage: %f\n", weap->MeasurementSize() ) );
 }
 
 void admElectroSocket::OnScrewdriver( idWeapon *weap )

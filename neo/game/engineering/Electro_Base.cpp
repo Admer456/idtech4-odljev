@@ -50,6 +50,7 @@ void admElectroBase::Think()
 void admElectroBase::OnMultimeter( idWeapon *weap )
 {
 	weap->Measure( 220.0f );
+	common->Printf( va("Measured voltage: %f\n", weap->MeasurementSize() ) );
 }
 
 void admElectroBase::OnScrewdriver( idWeapon *weap )
