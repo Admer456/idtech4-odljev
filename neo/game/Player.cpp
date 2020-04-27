@@ -8196,8 +8196,8 @@ void idPlayer::CalculateViewWeaponPos( idVec3 &origin, idMat3 &axis ) {
 	float			wallOffsetScale	= weapon.GetEntity()->GetWallOffset();
 	float			wallAngleScale	= weapon.GetEntity()->GetWallAngleScale();
 
-	cycleA += v_viewCycleA.GetFloat() * MS2SEC( gameLocal.msec ) * 2.0;
-	cycleB += v_viewCycleB.GetFloat() * MS2SEC( gameLocal.msec ) * 1.5;
+	cycleA += v_viewCycleA.GetFloat() * MS2SEC( gameLocal.msec );
+	cycleB += v_viewCycleB.GetFloat() * MS2SEC( gameLocal.msec );
 
 	if ( cycleA > idMath::PI ) cycleA = -idMath::PI;
 	if ( cycleB > idMath::PI ) cycleB = -idMath::PI;
@@ -8275,10 +8275,10 @@ void idPlayer::CalculateViewWeaponPos( idVec3 &origin, idMat3 &axis ) {
 	// push on Z axis when the player jumps
 	origin.z	-= v_weaponJumpPush.GetFloat()			* bZoom * bbobJump * 1.5f;
 	
-	// push weapon up-down, left-right like in a bowl shape
-	origin		-= v_weaponSwayForward.GetFloat()		* (1.0 - bSliding) * bZoom * bspeed * bbobJump * 1.2f * vecForward * sin( cycleB * 3.0f );
-	origin		+= v_weaponSwaySide.GetFloat()			* (1.0 - bSliding) * bZoom * bspeed * bbobJump * 2.0f * vecRight * sin( cycleA * 2.0f );
-	origin		+= v_weaponSwayUp.GetFloat()			* (1.0 - bSliding) * bZoom * bspeed * bbobJump * 2.3f * -vecUp * cos( cycleA * 2.0f ) * cos( cycleA * 2.0f );
+	// push weapon up-down, left-right like in an infinity shape
+//	origin		-= v_weaponSwayForward.GetFloat()		* (1.0 - bSliding) * bZoom * bspeed * bbobJump * 1.2f * vecForward * sin( cycleB * 2.0f );
+	origin		+= v_weaponSwaySide.GetFloat()			* (1.0 - bSliding) * bZoom * bspeed * bbobJump * 2.66f * vecRight * sin( cycleA * 1.0f );
+	origin		+= v_weaponSwayUp.GetFloat()			* (1.0 - bSliding) * bZoom * bspeed * bbobJump * 1.33f * -vecUp * sin( cycleA * 2.0f );
 
 	// raise and push the weapon forward while crouching
 	origin.z	+= v_crouchPushUp.GetFloat()			/** (bspeed * 8.0f)*/ * bZoom * bcrouch * 5.0f;
@@ -8307,8 +8307,8 @@ void idPlayer::CalculateViewWeaponPos( idVec3 &origin, idMat3 &axis ) {
 	angles.roll -= bLean * bZoom * 5.0f;
 	
 	// sway the weapon's pitch and yaw in a subtle way
-	angles.pitch += v_weaponSwayPitch.GetFloat()		* (1.0 - bSliding) * bdotForward * -sin( cycleB ) * sin( cycleA ) * 1.5f;
-	angles.yaw	+= v_weaponSwayYaw.GetFloat()			* (1.0 - bSliding) * bdotForward * sin( cycleA ) * cos( cycleB ) * 1.5f;
+	//angles.pitch += v_weaponSwayPitch.GetFloat()		* (1.0 - bSliding) * bdotForward * sin( cycleA * 2.0f );
+	//angles.yaw	+= v_weaponSwayYaw.GetFloat()			* (1.0 - bSliding) * bdotForward * sin( cycleA * 1.0f );
 
 	// rotate the weapon a bit up when jumping
 	angles.pitch += v_weaponJumpPitch.GetFloat()		* -sin( bangJump * 0.01764 ) * 10.0f;
@@ -8336,9 +8336,9 @@ void idPlayer::CalculateViewWeaponPos( idVec3 &origin, idMat3 &axis ) {
 	// speed sensitive idle drift
 	scale = xyspeed + 40.0f;
 	fracsin = scale * sin( MS2SEC( gameLocal.time ) ) * 0.01f;
-	angles.roll		+= fracsin * bZoom;
-	angles.yaw		+= fracsin * bZoom;
-	angles.pitch	+= fracsin * bZoom;
+	//angles.roll		+= fracsin * bZoom;
+	//angles.yaw		+= fracsin * bZoom;
+	//angles.pitch	+= fracsin * bZoom;
 
 	axis = angles.ToMat3() * viewAxis;
 }
