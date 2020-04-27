@@ -1112,7 +1112,9 @@ void idWeapon::UpdateGUI( void ) {
 
 	int inclip = AmmoInClip();
 	int ammoamount = AmmoAvailable();
-	float measuredSize = MeasurementSize();
+	static float measuredSize = 0.0f;
+
+	measuredSize = measuredSize*0.95 + MeasurementSize()*0.05;
 
 	if ( ammoamount < 0 ) {
 		// show infinite ammo
@@ -1131,7 +1133,7 @@ void idWeapon::UpdateGUI( void ) {
 	if ( measuredSize < 0.0f || measuredSize > 600.0f )
 		renderEntity.gui[ 0 ]->SetStateString( "player_toolmeasure", "1---" );
 	else
-		renderEntity.gui[ 0 ]->SetStateString( "player_toolmeasure", va( "%f", measuredSize ) );
+		renderEntity.gui[ 0 ]->SetStateString( "player_toolmeasure", va( "%3.2f", measuredSize ) );
 }
 
 /***********************************************************************
@@ -2344,7 +2346,7 @@ idWeapon::MeasurementSize()
 
 float idWeapon::MeasurementSize( void ) const
 {
-	return measurementSize;
+	return WEAPON_ATTACK ? measurementSize : 0.0f;
 }
 
 void idWeapon::Measure( float size )
@@ -3296,6 +3298,10 @@ void idWeapon::Event_ToolUse( void )
 				owner->StealWeapon( static_cast<idPlayer *>(ent) );
 			}
 		}
+		else
+		{
+			Measure( 0.0f );
+		}
 
 		if ( *hitSound != '\0' )
 		{
@@ -3405,6 +3411,10 @@ void idWeapon::UseMultimeter( idEntity *ent )
 	{
 		admElectroBase *elent = static_cast<admElectroBase*>(ent);
 		elent->OnMultimeter( this );
+	}
+	else
+	{
+		Measure( 0.0f );
 	}
 }
 
