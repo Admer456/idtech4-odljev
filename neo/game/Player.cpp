@@ -6171,8 +6171,6 @@ void idPlayer::PlayFootStepSound()
 		return;
 	}
 
-	common->Printf( "idPlayer::PlayFootStepSound()\n" );
-
 	// start footstep sound based on material type
 	material = GetPhysics()->GetContact( 0 ).material;
 	if ( material != NULL )
@@ -8132,9 +8130,9 @@ void idPlayer::CalculateViewWeaponPos( idVec3 &origin, idMat3 &axis ) {
 	}
 
 	// gun angles from bobbing
-	angles.roll		= scale * bobfracsin * 0.005f;
-	angles.yaw		= scale * bobfracsin * 0.01f;
-	angles.pitch	= xyspeed * bobfracsin * 0.005f;
+	//angles.roll		= scale * bobfracsin * 0.005f;
+	//angles.yaw		= scale * bobfracsin * 0.01f;
+	//angles.pitch	= xyspeed * bobfracsin * 0.005f;
 
 	// gun angles from turning
 	if ( gameLocal.isMultiplayer ) 
@@ -8323,7 +8321,7 @@ void idPlayer::CalculateViewWeaponPos( idVec3 &origin, idMat3 &axis ) {
 	
 	// perform weapon rolling, one rolling that is applied constantly, and another cycling rolling if we strafe left-right
 	angles.roll += v_rollSide.GetFloat()				* bZoom * bangRoll	* 10.0f;
-	angles.roll += v_weaponMoveRollSide.GetFloat()		* bZoom * bdotRight	* sin( cycleA * 2.0f ) * 5.0f;
+	angles.roll += v_weaponMoveRollSide.GetFloat()		* bZoom * bdotRight	* sin( cycleA ) * 2.0f;
 
 	// slightly raise the weapon while sliding (don't raise while zooming!)
 	angles.pitch -= 15.0 * bSliding * bZoom;
