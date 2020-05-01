@@ -8224,6 +8224,12 @@ void idPlayer::CalculateViewWeaponPos( idVec3 &origin, idMat3 &axis ) {
 
 	bspeed = speed * 0.3 + bspeed * 0.7;
 
+	// adjust cycle for sprinting
+	if ( speed > 0.25 )
+	{
+		cycleA += v_viewCycleA.GetFloat() * MS2SEC( gameLocal.msec ) * 0.5;
+	}
+
 	bdotForward		= dotForward * 0.2	+ bdotForward * 0.8;
 	bdotRight		= dotRight * 0.2	+ bdotRight * 0.8;
 	bdotUp			= dotUp * 0.2		+ bdotUp * 0.8;
@@ -8272,7 +8278,7 @@ void idPlayer::CalculateViewWeaponPos( idVec3 &origin, idMat3 &axis ) {
 
 	// push on Z axis when the player jumps
 	origin.z	-= v_weaponJumpPush.GetFloat()			* bZoom * bbobJump * 1.5f;
-	
+
 	// push weapon up-down, left-right like in an infinity shape
 //	origin		-= v_weaponSwayForward.GetFloat()		* (1.0 - bSliding) * bZoom * bspeed * bbobJump * 1.2f * vecForward * sin( cycleB * 2.0f );
 	origin		+= v_weaponSwaySide.GetFloat()			* (1.0 - bSliding) * bZoom * bspeed * bbobJump * 2.66f * vecRight * sin( cycleA * 1.0f );

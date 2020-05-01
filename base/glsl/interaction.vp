@@ -1,0 +1,124 @@
+/*
+===========================================================================
+
+Doom 3 GPL Source Code
+Copyright (C) 2016 Johannes Ohlemacher (http://github.com/eXistence/fhDOOM)
+
+This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).
+
+Doom 3 Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Doom 3 Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
+#include "global.inc"
+
+layout(location = 0) in vec3 vertex_position;
+layout(location = 1) in vec2 vertex_texcoord;
+layout(location = 2) in vec3 vertex_normal;
+layout(location = 3) in vec4 vertex_color;
+layout(location = 4) in vec3 vertex_binormal;
+layout(location = 5) in vec3 vertex_tangent;
+
+out vs_output
+{
+  vec4 color;
+  vec2 texNormal;
+  vec2 texDiffuse;
+  vec2 texSpecular;
+  vec4 texLight;
+  vec3 L;
+  vec3 V;
+  vec3 H;
+  vec4 shadow[6];
+  vec3 toLightOrigin;
+  float depth;
+  vec4 worldspacePosition;
+} result;
+
+void main(void)
+{ 
+  gl_Position = rpProjectionMatrix * rpModelViewMatrix * vec4(vertex_position, 1.0);
+
+  vec4 vertex_texcoord4 = vec4(vertex_texcoord, 1.0, 1.0);
+
+  result.texNormal.x = dot(rpBumpMatrixS, vertex_texcoord4);
+  result.texNormal.y = dot(rpBumpMatrixT, vertex_texcoord4);
+
+  result.texDiffuse.x = dot(rpDiffuseMatrixS, vertex_texcoord4);
+  result.texDiffuse.y = dot(rpDiffuseMatrixT, vertex_texcoord4);
+
+  result.texSpecular.x = dot(rpSpecularMatrixS, vertex_texcoord4);
+  result.texSpecular.y = dot(rpSpecularMatrixT, vertex_texcoord4);
+
+  vec4 vertex_position4 = vec4(vertex_position, 1.0);
+  result.texLight.x = dot(rpLightProjectionS, vertex_position4);
+  result.texLight.y = dot(rpLightProjectionT, vertex_position4);
+  result.texLight.z = dot(rpLightFallOff, vertex_position4);
+  result.texLight.w = dot(rpLightProjectionQ, vertex_position4);
+
+  mat3 M = mat3(vertex_tangent, vertex_binormal, vertex_normal);
+
+  vec3 L = rpLocalLightOrigin.xyz - vertex_position.xyz;
+  if(rpAmbientLight == 1)
+  {
+    const vec3 ambientLightVector = vec3(0.5, 0.5 - 0.385, 0.8925);
+    result.L = ambientLightVector;
+  }
+  else
+  {
+    result.L = L * M;
+  }  
+
+  vec3 V = rpLocalViewOrigin.xyz - vertex_position.xyz;
+  result.V = V * M;
+
+  vec3 H = L+V;
+  result.H = H * M;
+
+  result.color = (vertex_color / 255.0) * rpColorModulate + rpColorAdd;  
+
+  vec4 worldspace_position = rpModelMatrix * vec4(vertex_position, 1.0); 
+  result.worldspacePosition = worldspace_position;
+  
+  if(rpShadowMappingMode == 1)
+  {
+    result.shadow[0] = rpPointlightProjection[0] * worldspace_position;
+    result.shadow[1] = rpPointlightProjection[1] * worldspace_position;
+    result.shadow[2] = rpPointlightProjection[2] * worldspace_position;
+    result.shadow[3] = rpPointlightProjection[3] * worldspace_position;
+    result.shadow[4] = rpPointlightProjection[4] * worldspace_position;
+    result.shadow[5] = rpPointlightProjection[5] * worldspace_position;    
+  }
+  else if(rpShadowMappingMode == 2)
+  {
+    result.shadow[0] = rpSpotlightProjection * worldspace_position;        
+  }  
+  else if(rpShadowMappingMode == 3) 
+  {
+    result.shadow[0] = rpPointlightProjection[0] * worldspace_position;
+    result.shadow[1] = rpPointlightProjection[1] * worldspace_position;
+    result.shadow[2] = rpPointlightProjection[2] * worldspace_position;
+    result.shadow[3] = rpPointlightProjection[3] * worldspace_position;
+    result.shadow[4] = rpPointlightProjection[4] * worldspace_position;
+    result.shadow[5] = rpPointlightProjection[5] * worldspace_position;    
+    result.depth = (rpModelViewMatrix * vec4(vertex_position, 1.0)).z;
+  }
+
+  result.toLightOrigin = (rpInverseLightRotation * (worldspace_position - rpGlobalLightOrigin)).xyz;
+}
