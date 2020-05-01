@@ -1112,9 +1112,22 @@ void idWeapon::UpdateGUI( void ) {
 
 	int inclip = AmmoInClip();
 	int ammoamount = AmmoAvailable();
+	float randomNoise;
 	static float measuredSize = 0.0f;
+	static float randomWave = 0.0f;
+	static int displayCounter = 0;
+	displayCounter++;
+
+	randomWave += 4.0 * idMath::PI / 180.0f;
+	if ( randomWave > 20.0f )
+		randomWave *= -1;
+
+	// Some pseudo-random formula I made up on the spot
+	randomNoise = sin( 2 * randomWave )*cos( randomWave )*sin( 4 * randomWave )*sin( 5.12 * randomWave )*sin( 1.2 * randomWave ) + 0.02 * cos( 28 * randomWave );
 
 	measuredSize = measuredSize*0.95 + MeasurementSize()*0.05;
+	if ( measuredSize > 20.0f )
+		measuredSize += randomNoise;
 
 	if ( ammoamount < 0 ) {
 		// show infinite ammo
@@ -1130,11 +1143,17 @@ void idWeapon::UpdateGUI( void ) {
 	renderEntity.gui[ 0 ]->SetStateBool( "player_clip_empty", ( inclip == 0 ) );
 	renderEntity.gui[ 0 ]->SetStateBool( "player_clip_low", ( inclip <= lowAmmo ) );
 
-	if ( measuredSize < 0.0f || measuredSize > 600.0f )
-		renderEntity.gui[ 0 ]->SetStateString( "player_toolmeasure", "1---" );
-	else
-		renderEntity.gui[ 0 ]->SetStateString( "player_toolmeasure", va( "%3.2f", measuredSize ) );
+	if ( displayCounter > 20 )
+	{
+		if ( measuredSize < 0.0f || measuredSize > 600.0f )
+			renderEntity.gui[0]->SetStateString( "player_toolmeasure", "1---" );
+		else
+			renderEntity.gui[0]->SetStateString( "player_toolmeasure", va( "%3.2f", measuredSize ) );
+		
+		displayCounter = 0;
+	}
 }
+
 
 /***********************************************************************
 
@@ -3247,7 +3266,7 @@ void idWeapon::Event_ToolUse( void )
 	{
 		idVec3 start = playerViewOrigin;
 		idVec3 end = start + playerViewAxis[ 0 ] * (meleeDistance * owner->PowerUpModifier( MELEE_DISTANCE ));
-		gameLocal.clip.TracePoint( tr, start, end, MASK_SHOT_RENDERMODEL, owner );
+		gameLocal.clip.TracePoint( tr, start, end, MASK_ALL, owner );
 		if ( tr.fraction < 1.0f )
 		{
 			ent = gameLocal.GetTraceEntity( tr );
