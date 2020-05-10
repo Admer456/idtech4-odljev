@@ -7127,16 +7127,17 @@ void idPlayer::Think( void )
 	}
 
 	// zooming
-	if ( ( usercmd.buttons ^ oldCmd.buttons ) & BUTTON_ZOOM ) 
+	if ( (usercmd.buttons ^ oldCmd.buttons) & BUTTON_ZOOM )
 	{
-		if ( ( usercmd.buttons & BUTTON_ZOOM ) && weapon.GetEntity() ) 
+		if ( (usercmd.buttons & BUTTON_ZOOM) && weapon.GetEntity() )
 		{
 			// Formula to get a longer duration on lower FOVs
 			float zoomDuration = (weapon.GetEntity()->GetZoomFov() * -11.1111) + 1000;
 
 			zoomFov.Init( gameLocal.time, zoomDuration, CalcFov( false ), weapon.GetEntity()->GetZoomFov() );
-		} 
-		else 
+		}
+
+		else
 		{
 			zoomFov.Init( gameLocal.time, 200.0f, zoomFov.GetCurrentValue( gameLocal.time ), DefaultFov() );
 		}
@@ -7960,8 +7961,8 @@ float idPlayer::DefaultFov( void ) const {
 	if ( gameLocal.isMultiplayer ) {
 		if ( fov < 90.0f ) {
 			return 90.0f;
-		} else if ( fov > 110.0f ) {
-			return 110.0f;
+		} else if ( fov > 170.0f ) {
+			return 170.0f;
 		}
 	}
 
@@ -7978,12 +7979,23 @@ Fixed fov at intermissions, otherwise account for fov variable and zooms.
 float idPlayer::CalcFov( bool honorZoom ) {
 	float fov;
 
+	bool isUsingComputer = false;
+
+	if ( isUsing )
+		if ( usedEntity )
+			isUsingComputer = usedEntity->IsType( admComputerKeyboard::Type );
+
 	if ( fxFov ) {
 		return DefaultFov() + 10.0f + cos( ( gameLocal.time + 2000 ) * 0.01 ) * 10.0f;
 	}
 
 	if ( influenceFov ) {
 		return influenceFov;
+	}
+
+	if ( isUsingComputer )
+	{
+		return 50.0f;
 	}
 
 	if ( zoomFov.IsDone( gameLocal.time ) ) {
@@ -8130,9 +8142,9 @@ void idPlayer::CalculateViewWeaponPos( idVec3 &origin, idMat3 &axis ) {
 	}
 
 	// gun angles from bobbing
-	//angles.roll		= scale * bobfracsin * 0.005f;
-	//angles.yaw		= scale * bobfracsin * 0.01f;
-	//angles.pitch	= xyspeed * bobfracsin * 0.005f;
+	angles.roll		= 0;
+	angles.yaw		= 0;
+	angles.pitch	= 0;
 
 	// gun angles from turning
 	if ( gameLocal.isMultiplayer ) 

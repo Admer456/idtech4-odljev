@@ -506,10 +506,6 @@ void admComputerMonitor::Think()
 	{
 
 	}
-
-//	if ( timeToDismount )
-//		timeToDismount = false;
-
 	
 	if ( keys )
 		keys = 0;
@@ -534,21 +530,11 @@ void admComputerMonitor::UpdateScreen()
 {
 	HandleKeys();
 
-	for ( int i = 0; i < numScreenStrings-1; i++ )
+	for ( int i = 0; i < numScreenStrings - 1; i++ )
 	{
-		renderEntity.gui[ 0 ]->SetStateString( va( "screenString%d", i ), screenStrings[ i ] );
+		renderEntity.gui[0]->SetStateString( va( "screenString%d", i ), screenStrings[i] );
 	}
 }
-
-// shift+2 = "
-// shift+3 = .
-// shift+4 = ,
-// shift+5 = -
-// shift+6 = +
-// shift+7 = /
-// shift+8 = (
-// shift+9 = )
-// shift+0 = =
 
 void admComputerMonitor::HandleKeys()
 {
@@ -657,7 +643,7 @@ void admComputerMonitor::HandleKeys()
 
 	if ( nums & BIT( NUM_LCTRL ) )
 	{
-
+		// nothing
 	}
 
 	if ( nums & BIT( NUM_SHIFT ) )
@@ -719,9 +705,7 @@ bool admComputerMonitor::IsCommandEmpty()
 
 void admComputerMonitor::InterpretCommand()
 {
-//	nums &= ~(BIT( SkipKeyInput ));
-
-	// universal exit
+	// universal exit, regardless of the current program
 	if ( IsCommand( "quit" )	||
 		 IsCommand( "exit" )	||
 		 IsCommand( "stand up" )||
@@ -736,7 +720,6 @@ void admComputerMonitor::InterpretCommand()
 		PerformNewline();
 
 		timeToDismount = true;
-	//	nums |= BIT( SkipKeyInput );
 	}
 
 	switch ( mode )
@@ -811,6 +794,7 @@ void admComputerMonitor::InterpretCommand()
 				  CommandStartsWith( "8" ) ||
 				  CommandStartsWith( "9" ) )
 		{
+			// BASIC is not implemented yet, it'll take years
 			//int line; idStr copy;
 			//copy = screenStrings[ lastline ];
 			//
