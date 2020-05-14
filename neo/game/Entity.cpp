@@ -4787,7 +4787,7 @@ void idEntity::Event_UpdateCameraTarget( void ) {
 				dir = ent->GetPhysics()->GetOrigin() - cameraTarget->GetPhysics()->GetOrigin();
 				dir.Normalize();
 				cameraTarget->SetAxis( dir.ToMat3() );
-				SetAxis(dir.ToMat3());
+				//SetAxis(dir.ToMat3()); // Stop aligning the damn monitor towards the camera's direction
 				break;
 			}
 			kv = cameraTarget->spawnArgs.MatchPrefix( "target", kv );
