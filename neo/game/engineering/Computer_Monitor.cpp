@@ -490,8 +490,8 @@ void admComputerMonitor::Spawn()
 
 void admComputerMonitor::Think()
 {
-	if ( !hasSpawnThought )
-		DispatchSpawnThink();
+	//if ( !hasSpawnThought )
+	//	DispatchSpawnThink();
 
 	idEntity::Think();
 
@@ -517,7 +517,7 @@ void admComputerMonitor::SpawnThink()
 {
 	FindCustomTargets( "target_serial", serialPorts );
 
-	common->Printf( "serialPorts: %d (%s)\n", serialPorts.Num(), serialPorts[0].GetEntity()->GetName() );
+	common->Printf( "serialPorts: %d\n", serialPorts.Num() );
 }
 
 void admComputerMonitor::SetKeys( int keys, int nums )
