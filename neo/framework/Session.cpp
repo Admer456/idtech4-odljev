@@ -1230,7 +1230,7 @@ void idSessionLocal::MoveToNewMap( const char *mapName ) {
 
 	if ( !mapSpawnData.serverInfo.GetBool("devmap") ) {
 		// Autosave at the beginning of the level
-		SaveGame( GetAutoSaveName( mapName ), true );
+		//SaveGame( GetAutoSaveName( mapName ), true ); // This fixes a certain crash in Odljev
 	}
 
 	SetGUI( NULL, NULL );
