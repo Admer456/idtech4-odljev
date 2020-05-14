@@ -255,6 +255,7 @@ public:
 	void					Restore( idRestoreGame *savefile );
 
 	void					Spawn( void );
+	bool					InitWeaponModel( void );
 	void					HeardSound( idEntity *ent, const char *action );
 	idActor					*GetEnemy( void ) const;
 	void					TalkTo( idActor *actor );
@@ -348,6 +349,9 @@ protected:
 	idVec3					projectileGravity;
 	idEntityPtr<idProjectile> projectile;
 	idStr					attack;
+
+	idStaticEntity*			weaponAttachmentModel;
+	jointHandle_t			weaponAttachmentJoint;
 
 	//Added for the LM
 	idVec3					homingMissileGoal;

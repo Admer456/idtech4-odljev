@@ -926,6 +926,8 @@ void idAI::Spawn( void ) {
 		projectile = NULL;
 	}
 
+	InitWeaponModel();
+
 	particles.Clear();
 	restartParticles = true;
 	useBoneAxis = spawnArgs.GetBool( "useBoneAxis" );
@@ -958,6 +960,32 @@ void idAI::Spawn( void ) {
 
 	// init the move variables
 	StopMove( MOVE_STATUS_DONE );
+}
+
+/*
+===================
+idAI::InitWeaponModel
+===================
+*/
+bool idAI::InitWeaponModel( void )
+{
+	const char* weaponModel = spawnArgs.GetString( "model_weapon", "" );
+	if ( !weaponModel[0] )
+		return false;	// Legacy monsters with weapons already embedded in the model
+
+	const char* weaponJoint = spawnArgs.GetString( "attach_weapon", "RWrist" );
+	idAngles weaponAngles = spawnArgs.GetAngles( "angles_weapon", "0 0 0" );
+	weaponAttachmentJoint = animator.GetJointHandle( weaponJoint );
+
+	idDict dict;
+	dict.Set( "classname", "func_static" );
+	weaponAttachmentModel = static_cast<idStaticEntity*>(gameLocal.SpawnEntityType( idStaticEntity::Type, &dict ));
+	weaponAttachmentModel->SetModel( weaponModel );
+	weaponAttachmentModel->BindToJoint( this, weaponAttachmentJoint, true );
+	weaponAttachmentModel->GetPhysics()->SetOrigin( vec3_origin );
+	weaponAttachmentModel->GetPhysics()->SetAxis( weaponAngles.ToMat3() );
+
+	return true;
 }
 
 /*
@@ -3520,6 +3548,12 @@ void idAI::Killed( idEntity *inflictor, idEntity *attacker, int damage, const id
 	// make monster nonsolid
 	physicsObj.SetContents( 0 );
 	physicsObj.GetClipModel()->Unlink();
+
+	if ( weaponAttachmentModel )
+	{
+		weaponAttachmentModel->BecomeInactive( TH_THINK );
+		weaponAttachmentModel->Hide();
+	}
 
 	Unbind();
 
