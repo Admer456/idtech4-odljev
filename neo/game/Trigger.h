@@ -284,4 +284,22 @@ private:
 	void				Event_Trigger( idEntity *activator );
 };
 
+class admTrigger_Bind : public idEntity {
+public:
+
+	CLASS_PROTOTYPE( admTrigger_Bind );
+
+						admTrigger_Bind( void );
+
+	void				Spawn( void );
+	void				SpawnThink( void );
+
+private:
+	idEntity*			bindParentEntity;
+	idEntity*			bindChildEntity;
+
+	void				Event_Trigger( idEntity *activator );
+	void				BindTheEnts( void );
+};
+
 #endif /* !__GAME_TRIGGER_H__ */

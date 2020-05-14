@@ -1190,3 +1190,63 @@ idTrigger_Touch::Disable
 void idTrigger_Touch::Disable( void ) {
 	BecomeInactive( TH_THINK );
 }
+
+CLASS_DECLARATION( idEntity, admTrigger_Bind )
+	EVENT( EV_Activate, admTrigger_Bind::Event_Trigger )
+END_CLASS
+
+admTrigger_Bind::admTrigger_Bind()
+{
+	bindParentEntity = nullptr;
+	bindChildEntity = nullptr;
+}
+
+void admTrigger_Bind::Spawn()
+{
+
+}
+
+void admTrigger_Bind::SpawnThink()
+{
+	bindParentEntity = gameLocal.FindEntity( spawnArgs.GetString( "parentEntity" ) );
+	bindChildEntity = gameLocal.FindEntity( spawnArgs.GetString( "childEntity" ) );
+
+	if ( spawnArgs.GetBool( "start_on", true ) )
+	{
+		BindTheEnts();
+	}
+}
+
+void admTrigger_Bind::BindTheEnts()
+{
+	if ( !bindParentEntity || !bindChildEntity )
+		return;
+
+	if ( bindChildEntity->GetBindMaster() && bindChildEntity->GetBindMaster() == bindParentEntity )
+	{
+		bindChildEntity->Unbind();
+	}
+	else if ( bindChildEntity->GetBindMaster() )
+	{
+		common->Warning( "BRO, this entity is bound to an entity that AIN'T your parent entity\n" );
+	}
+	else
+	{
+		bool orientated = spawnArgs.GetBool( "orientated", true );
+		bindChildEntity->Bind( bindParentEntity, orientated );
+	}
+}
+
+void admTrigger_Bind::Event_Trigger( idEntity* activator )
+{
+	if ( idStr::Ieq( spawnArgs.GetString( "parentEntity" ), "activator" ) )
+	{
+		bindParentEntity = activator;
+	}
+	else if ( idStr::Ieq( spawnArgs.GetString( "childEntity" ), "activator" ) )
+	{
+		bindChildEntity = activator;
+	}
+
+	BindTheEnts();
+}
